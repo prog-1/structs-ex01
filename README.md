@@ -2,8 +2,10 @@
 
 ## Description
 
-Create a program which implements a phone book, allowing to list, add, remove and edit phone book entries.
+Create a program which implements a phone book, allowing to list and add phone book entries.
 We recommend to store the phone book in files using [JSON](https://en.wikipedia.org/wiki/JSON) format.
+
+TODO(yarcat): Explain UI.
 
 ## JSON
 
