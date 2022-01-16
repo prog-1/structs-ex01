@@ -79,8 +79,8 @@ const phonebookFile = "phonebook.json"
 
 ```go
 entries := []Entry{
-  {"Jaroslavs", "Samcuks", "+41123456789"},
-  {"Pavel", "Zaichenkov", "+41987654321"},
+  {1, "Jaroslavs", "Samcuks", "+41123456789"},
+  {2, "Pavel", "Zaichenkov", "+41987654321"},
 }
 
 f := MustCreateFile(phonebookFile)
