@@ -2,10 +2,51 @@
 
 ## Description
 
-Create a program which implements a phone book, allowing to list and add phone book entries.
+Create a program which implements a phone book, allowing to list, add and delete phone book entries.
 We recommend to store the phone book in files using [JSON](https://en.wikipedia.org/wiki/JSON) format.
 
-TODO(yarcat): Explain UI.
+User interface (UI) should contain operation choices e.g.
+```txt
+Please choose you action:
+1) List all entries.
+2) Add new entry.
+3) Remove an entry.
+```
+
+The database should be read once on startup, and saved every time new entry is added, or an existing
+entry is removed.
+
+### Listing entries
+
+Entries should be sorted by last name and listed with 20 elements pagination. It means that every 20
+entries a user should confirm to see next 20 (or less). E.g.
+
+```txt
+ID              Last Name                First Name                Phone#
+-------------------------------------------------------------------------
+3               Foo                      Bar                       +22222222222
+4               Bar                      Foo                       +33333333333
+...
+7              Buba                     Pupkin                    +11111111111
+Please press <ENTER> to continue...
+ID              Last Name                First Name                Phone#
+-------------------------------------------------------------------------
+1               Jaroslavs                Samcuks                   +41123456789
+2               Pavel                    Zaichenkov                +41987654321
+```
+
+Please note that IDs are auto-incremented for every new entry and aren't necessary sorted.
+
+### Adding new entries
+
+- IDs should be auto-assigned and greater than any existing ID.
+- Names, last names and phone numbers should be entered from the keyboard.
+- Names and last names could be duplicated.
+
+### Removing entries
+
+- A user is asked to enter entry ID, which is then removed from the database.
+- Optional confirmation messages could be shown.
 
 ## JSON
 
@@ -17,6 +58,7 @@ In the examples below we use the following structure:
 
 ```go
 type Entry struct {
+  ID          uint32
   FirstName   string
   LastName    string
   PhoneNumber string
