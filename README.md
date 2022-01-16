@@ -5,6 +5,8 @@
 Create a program which implements a phone book, allowing to list, add and delete phone book entries.
 We recommend to store the phone book in files using [JSON](https://en.wikipedia.org/wiki/JSON) format.
 
+### UI / Main menu
+
 User interface (UI) should contain operation choices e.g.
 ```txt
 Please choose you action:
@@ -27,7 +29,7 @@ ID              Last Name                First Name                Phone#
 3               Foo                      Bar                       +22222222222
 4               Bar                      Foo                       +33333333333
 ...
-7              Buba                     Pupkin                    +11111111111
+7               Buba                     Pupkin                    +11111111111
 Please press <ENTER> to continue...
 ID              Last Name                First Name                Phone#
 -------------------------------------------------------------------------
@@ -35,7 +37,9 @@ ID              Last Name                First Name                Phone#
 2               Pavel                    Zaichenkov                +41987654321
 ```
 
-Please note that IDs are auto-incremented for every new entry and aren't necessary sorted.
+Note: IDs are auto-incremented for every new entry and aren't necessary sorted.
+
+After the last entry the main menu should be displayed again.
 
 ### Adding new entries
 
