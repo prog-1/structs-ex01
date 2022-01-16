@@ -12,7 +12,7 @@ User interface (UI) should contain operation choices e.g.
 Please choose you action:
 1) List all entries.
 2) Add new entry.
-3) Remove an entry.
+3) Remove an entry by ID.
 ```
 
 The database should be read once on startup, and saved every time new entry is added, or an existing
