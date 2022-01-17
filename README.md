@@ -26,15 +26,15 @@ entries a user should confirm to see next 20 (or less). E.g.
 ```txt
 ID              Last Name                First Name                Phone#
 -------------------------------------------------------------------------
-3               Foo                      Bar                       +22222222222
 4               Bar                      Foo                       +33333333333
-...
 7               Buba                     Pupkin                    +11111111111
+...
+3               Foo                      Bar                       +22222222222
 Please press <ENTER> to continue...
 ID              Last Name                First Name                Phone#
 -------------------------------------------------------------------------
-1               Jaroslavs                Samcuks                   +41123456789
-2               Pavel                    Zaichenkov                +41987654321
+1               Samcuks                  Jaroslavs                 +41123456789
+2               Zaichenkov               Pavel                     +41987654321
 ```
 
 Note: IDs are auto-incremented for every new entry and aren't necessary sorted.
