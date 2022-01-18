@@ -110,6 +110,7 @@ fmt.Println(entries)
 
 ### Main menu
 
+```go
 func mainMenu() (choice int) {
 	fmt.Println(`Choose your action:
 1) List entries
@@ -119,9 +120,11 @@ func mainMenu() (choice int) {
 	fmt.Scanln(&choice)
 	return choice
 }
+```
 
 ### List entries
 
+```go
 func listEntries() {
 	entries, err := loadEntries()
 	if err != nil {
@@ -141,9 +144,11 @@ func listEntries() {
 		}
 	}
 }
+```
 
 ### Add new entry
 
+```go
 func addNew() {
 	var e Entry
 	fmt.Print("Enter last name: ")
@@ -159,9 +164,11 @@ func addNew() {
 		fmt.Println("ERR:", err)
 	}
 }
+```
 
 ### Main loop
 
+```go
 func main() {
 	for {
 		choice := mainMenu()
@@ -178,3 +185,4 @@ func main() {
 		}
 	}
 }
+```
