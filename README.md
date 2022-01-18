@@ -41,13 +41,13 @@ Note: IDs are auto-incremented for every new entry and aren't necessary sorted.
 
 After the last entry the main menu should be displayed again.
 
-### Adding new entries
+### Adding new entries (optional)
 
 - IDs should be auto-assigned and greater than any existing ID.
 - Names, last names and phone numbers should be entered from the keyboard.
 - Names and last names could be duplicated.
 
-### Removing entries
+### Removing entries (optional)
 
 - A user is asked to enter entry ID, which is then removed from the database.
 - Optional confirmation messages could be shown.
