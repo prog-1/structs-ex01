@@ -122,21 +122,21 @@ func mainMenu() (choice int) {
 }
 ```
 
+### Sort entries
+
+```go
+sort.Slice(entries, func(i, j int) bool { return entries[i].LastName < entries[j].LastName })
+```
+
 ### List entries
 
 ```go
-func listEntries() {
-	entries, err := loadEntries()
-	if err != nil {
-		fmt.Println("ERR:", err)
-		return
-	}
-	sort.Slice(entries, func(i, j int) bool { return entries[i].LastName < entries[j].LastName })
+func listEntries(linesPerPage int, entries []Entry) {
 	fmt.Printf("%10s %20s %20s %20s\n", "ID", "Last Name", "First Name", "Phone Number")
 	fmt.Println("-------------------------------------------------------------------------")
 	for i, e := range entries {
 		fmt.Printf("%10d %20s %20s %20s\n", e.ID, e.LastName, e.FirstName, e.PhoneNumber)
-		if (i+1)%pageLines == 0 && i < len(entries)-1 {
+		if (i+1)%linesPerPage == 0 && i < len(entries)-1 {
 			fmt.Print("Press <ENTER> to continue...")
 			fmt.Scanln()
 			fmt.Printf("%10s %20s %20s %20s\n", "ID", "Last Name", "First Name", "Phone Number")
@@ -146,23 +146,22 @@ func listEntries() {
 }
 ```
 
-### Add new entry
+### New entry
 
 ```go
-func addNew() {
-	var e Entry
+func newEntry(ID uint32) Entry {
+	e := Entry{ID: ID}
+	
 	fmt.Print("Enter last name: ")
 	fmt.Scan(&e.LastName)
+	
 	fmt.Print("Enter first name: ")
 	fmt.Scan(&e.FirstName)
+	
 	fmt.Print("Enter phone number: ")
 	fmt.Scan(&e.PhoneNumber)
-	entries, _ := loadEntries()
-  ...                  // Find largest available ID
-	e.ID = largestID + 1 // And increment it.
-	if err := saveEntries(append(entries, e)); err != nil {
-		fmt.Println("ERR:", err)
-	}
+
+	return e
 }
 ```
 
