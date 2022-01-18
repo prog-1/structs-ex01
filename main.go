@@ -17,14 +17,12 @@ type Record struct {
 }
 
 func Sort(rec []Record) {
-	for range rec {
-		for i := range rec {
-			if i != len(rec)-1 {
-				tmp := []string{rec[i].LastName, rec[i+1].LastName}
-				sort.Strings(tmp)
-				if tmp[0] != rec[i].LastName {
-					rec[i], rec[i+1] = rec[i+1], rec[i]
-				}
+	for j := range rec {
+		for i := 0; i < len(rec)-1-j; i++ {
+			tmp := []string{rec[i].LastName, rec[i+1].LastName}
+			sort.Strings(tmp)
+			if tmp[0] != rec[i].LastName {
+				rec[i], rec[i+1] = rec[i+1], rec[i]
 			}
 		}
 	}
