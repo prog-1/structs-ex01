@@ -131,16 +131,19 @@ sort.Slice(entries, func(i, j int) bool { return entries[i].LastName < entries[j
 ### List entries
 
 ```go
-func listEntries(linesPerPage int, entries []Entry) {
+func printHeader() {
 	fmt.Printf("%10s %20s %20s %20s\n", "ID", "Last Name", "First Name", "Phone Number")
 	fmt.Println("-------------------------------------------------------------------------")
+}
+
+func listEntries(linesPerPage int, entries []Entry) {
+	printHeader()
 	for i, e := range entries {
 		fmt.Printf("%10d %20s %20s %20s\n", e.ID, e.LastName, e.FirstName, e.PhoneNumber)
-		if (i+1)%linesPerPage == 0 && i < len(entries)-1 {
+		if (i+1)%linesPerPage == 0 && i < len(entries)-1 { // Avoid the prompt for the last row.
 			fmt.Print("Press <ENTER> to continue...")
 			fmt.Scanln()
-			fmt.Printf("%10s %20s %20s %20s\n", "ID", "Last Name", "First Name", "Phone Number")
-			fmt.Println("-------------------------------------------------------------------------")
+			printHeader()
 		}
 	}
 }
