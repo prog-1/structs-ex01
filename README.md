@@ -9,7 +9,7 @@ We recommend to store the phone book in files using [JSON](https://en.wikipedia.
 
 User interface (UI) should contain operation choices e.g.
 ```txt
-Please choose you action:
+Choose your action:
 1) List all entries.
 2) Add new entry.
 3) Remove an entry by ID.
@@ -30,7 +30,7 @@ ID              Last Name                First Name                Phone#
 7               Buba                     Pupkin                    +11111111111
 ...
 3               Foo                      Bar                       +22222222222
-Please press <ENTER> to continue...
+Press <ENTER> to continue...
 ID              Last Name                First Name                Phone#
 -------------------------------------------------------------------------
 1               Samcuks                  Jaroslavs                 +41123456789
