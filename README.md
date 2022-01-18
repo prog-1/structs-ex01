@@ -105,3 +105,76 @@ if err := json.NewDecoder(bufio.NewReader(f)).Decode(&entries); err != nil {
 
 fmt.Println(entries)
 ```
+
+## Extra hints
+
+### Main menu
+
+func mainMenu() (choice int) {
+	fmt.Println(`Choose your action:
+1) List entries
+2) Add new
+3) Remove by ID
+4) Quit`)
+	fmt.Scanln(&choice)
+	return choice
+}
+
+### List entries
+
+func listEntries() {
+	entries, err := loadEntries()
+	if err != nil {
+		fmt.Println("ERR:", err)
+		return
+	}
+	sort.Slice(entries, func(i, j int) bool { return entries[i].LastName < entries[j].LastName })
+	fmt.Printf("%10s %20s %20s %20s\n", "ID", "Last Name", "First Name", "Phone Number")
+	fmt.Println("-------------------------------------------------------------------------")
+	for i, e := range entries {
+		fmt.Printf("%10d %20s %20s %20s\n", e.ID, e.LastName, e.FirstName, e.PhoneNumber)
+		if (i+1)%pageLines == 0 && i < len(entries)-1 {
+			fmt.Print("Press <ENTER> to continue...")
+			fmt.Scanln()
+			fmt.Printf("%10s %20s %20s %20s\n", "ID", "Last Name", "First Name", "Phone Number")
+			fmt.Println("-------------------------------------------------------------------------")
+		}
+	}
+}
+
+### Add new entry
+
+func addNew() {
+	var e Entry
+	fmt.Print("Enter last name: ")
+	fmt.Scan(&e.LastName)
+	fmt.Print("Enter first name: ")
+	fmt.Scan(&e.FirstName)
+	fmt.Print("Enter phone number: ")
+	fmt.Scan(&e.PhoneNumber)
+	entries, _ := loadEntries()
+  ...                  // Find largest available ID
+	e.ID = largestID + 1 // And increment it.
+	if err := saveEntries(append(entries, e)); err != nil {
+		fmt.Println("ERR:", err)
+	}
+}
+
+### Main loop
+
+func main() {
+	for {
+		choice := mainMenu()
+		if choice == 1 {
+			listEntries()
+		} else if choice == 2 {
+			addNew()
+		} else if choice == 3 {
+			removeByID()
+		} else if choice == 4 {
+			break
+		} else {
+			fmt.Println("ERR: wrong choice", choice)
+		}
+	}
+}
