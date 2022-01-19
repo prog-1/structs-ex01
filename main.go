@@ -62,7 +62,7 @@ func List() {
 	Header()
 	for i, j := range entries {
 		fmt.Printf("%4d %14s %14s %20s\n", j.ID, j.LastName, j.FirstName, j.PhoneNumber)
-		if i == 19 && i < len(entries) {
+		if i == 19 || 39 && i < len(entries) { // i rewrite i later
 			fmt.Println("Press <ENTER> to continue...")
 			fmt.Scanln()
 			Header()
