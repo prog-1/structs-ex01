@@ -46,7 +46,7 @@ func List() {
 		if i == 20 {
 			fmt.Println("Please press <ENTER> to continue...")
 			fmt.Scan()
-			fmt.Printf("%s%25s%24s%26s\n", "ID", "Last Name", "First name", "Phone number")
+			fmt.Printf("%s%24s%24s%26s\n", "ID", "Last Name", "First name", "Phone number")
 			fmt.Println("----------------------------------------------------------------------------")
 			i = 0
 		}
