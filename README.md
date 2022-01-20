@@ -5,6 +5,12 @@
 Create a program which implements a phone book, allowing to list, add and delete phone book entries.
 We recommend to store the phone book in files using [JSON](https://en.wikipedia.org/wiki/JSON) format.
 
+In part 1 of the homework adding and removing entries is optional.
+
+In part 2 we implement the remaining functionality, so list, add, remove should work. Extra points for
+using [termbox-go](https://github.com/nsf/termbox-go) for the user input to ensure users don't have to
+confirm every action with ENTER.
+
 ### UI / Main menu
 
 User interface (UI) should contain operation choices e.g.
@@ -41,13 +47,13 @@ Note: IDs are auto-incremented for every new entry and aren't necessary sorted.
 
 After the last entry the main menu should be displayed again.
 
-### Adding new entries (optional)
+### Adding new entries (optional for part 1)
 
 - IDs should be auto-assigned and greater than any existing ID.
 - Names, last names and phone numbers should be entered from the keyboard.
 - Names and last names could be duplicated.
 
-### Removing entries (optional)
+### Removing entries (optional for part 2)
 
 - A user is asked to enter entry ID, which is then removed from the database.
 - Optional confirmation messages could be shown.
