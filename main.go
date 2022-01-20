@@ -157,21 +157,50 @@ func Exit() {
 	os.Exit(0)
 }
 
-type Stars struct {
-	Star int
-	Text string
+type Feedbackstruct struct {
+	Stars int
+	Text  string
 }
 
-func Feedback() { // In process......
-	var stars int
-	fmt.Println("How many stars would you give us?")
-	fmt.Scan(&stars)
-	if stars < 0 {
+func Feedback() { // i wanned to make stars struct and convert it to json file to keep.
+	var feedbacks []Feedbackstruct //variable
+
+	f, err := os.Open("feedback.json") // open and encode REMEMBER RENAME FILE THAT WILL BE OPENED
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer f.Close()
+	if err := json.NewDecoder(bufio.NewReader(f)).Decode(&feedbacks); err != nil {
+		log.Fatal(err)
+	}
+	var newfeedback Feedbackstruct //just var
+
+	fmt.Println("You want to leave a feedback? You are so great user! ^0^") // scan and action
+	fmt.Print("Stars: ")
+	fmt.Scan(&newfeedback.Stars)
+
+	scanner := bufio.NewScanner(os.Stdin) // Scan information you need
+	fmt.Print("Commentary: ")
+	scanner.Scan()
+	scanner.Scan()
+	newfeedback.Text = scanner.Text()
+
+	if newfeedback.Stars < 0 {
 		fmt.Println("Isnt this too cruel... ＞﹏＜")
 	} else {
-		fmt.Println("Thanks for sharing your opinion. Its really important ^_^")
-	} // i would wanna to make stars struct and convert it to json file to keep all inputed stars but i didnt understand how to encode with user
-
+		fmt.Println("Thanks for sharing your opinion. It is really important for us. ^_^")
+	}
+	feedbacks = append(feedbacks, newfeedback) // add new
+	f, err = os.Create("feedback.json")        // encode FILE RENAIMING
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer f.Close()
+	w := bufio.NewWriter(f)
+	defer w.Flush()
+	if err := json.NewEncoder(w).Encode(feedbacks); err != nil {
+		log.Fatal(err)
+	}
 }
 
 func main() {
@@ -186,7 +215,7 @@ func main() {
 		} else if action == 4 {
 			Exit()
 		} else if action == 5 {
-			fmt.Println("This function isnt done yet")
+			Feedback()
 		}
 	}
 }
