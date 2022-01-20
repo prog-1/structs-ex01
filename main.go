@@ -35,17 +35,9 @@ func Sort(entries []Entry) {
 }
 
 func Header() {
-	fmt.Printf("%4s %14s %14s %20s\n", "ID", "Last Name", "First Name", "Phone Number")
+	fmt.Printf("%10s %20s %20s %20s\n", "ID", "Last Name", "First Name", "Phone Number")
 	fmt.Println("-------------------------------------------------------------------------")
 }
-
-/*func GiveID(entries []Entry) uint {
-	i := 1
-	for i, j := range entries {
-		j.ID = uint(i) + 1 //this prays that i will change it
-	}
-	return uint(i) + 1
-}*/
 
 func List() {
 	var entries []Entry
@@ -61,49 +53,125 @@ func List() {
 	Sort(entries)
 	Header()
 	for i, j := range entries {
-		fmt.Printf("%4d %14s %14s %20s\n", j.ID, j.LastName, j.FirstName, j.PhoneNumber)
+		fmt.Printf("%10d %20s %20s %20s\n", j.ID, j.LastName, j.FirstName, j.PhoneNumber)
 		if (i+1)%20 == 0 && i < len(entries) {
+			fmt.Println(" ")
 			fmt.Println("Press <ENTER> to continue...")
+			fmt.Println(" ")
 			fmt.Scanln()
 			Header()
 		}
 	}
-
 }
 
-func Add(entries []Entry) {
-	// how to encode with user input???
-	f, err := os.Open("phonebook.json")
+func GiveID(entries []Entry) (i uint) {
+	i = uint(len(entries)) + 1 //Thats not ideal and will work wrong if the last contact will be deleted
+	return i
+}
+
+func Add() {
+	// how to encode with user input??? Tutorial by me (version 1)
+	var entries []Entry // make variable where will be all data
+
+	f, err := os.Open("phonebook.json") // open and encode file with already been information and put it in variable you made in previous step
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer f.Close()
+	if err := json.NewDecoder(bufio.NewReader(f)).Decode(&entries); err != nil {
+		log.Fatal(err)
+	}
+
+	var newentries Entry // make new variable with type of your struct, but be careful - it need to be NOT SLICE OF STRUCT, JUST STRUCT, CAUSE WE MAKING ONLY ONE NEW CONTACT, NOT 5 IN ONE TIME
+
+	scanner := bufio.NewScanner(os.Stdin) // Scan information you need
+	fmt.Println("Enter last name:")       // better not use bufio reader, it add \n\r to text and you ll need 2 variables for string and error
+	scanner.Scan()
+	scanner.Scan()
+	newentries.LastName = scanner.Text()
+	fmt.Println("Enter first name:")
+	scanner.Scan()
+	newentries.FirstName = scanner.Text()
+	fmt.Println("Enter phone number:")
+	scanner.Scan()
+	newentries.PhoneNumber = scanner.Text()
+	newentries.ID = GiveID(entries)
+
+	entries = append(entries, newentries) // add scanned data to decoded earlier data
+
+	f, err = os.Create("phonebook.json") // and encode it back
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer f.Close()
 	w := bufio.NewWriter(f)
 	defer w.Flush()
-	//reader := bufio.NewReader(os.Stdin)
 	if err := json.NewEncoder(w).Encode(entries); err != nil {
 		log.Fatal(err)
 	}
 
 }
 
-///func Remove(entries []Entry, s int) []Entry {
-// return append(s[:s], slice[s+1:]...)
-//}
+func Remove() {
+	var entries []Entry                 //var
+	f, err := os.Open("phonebook.json") // opening and decoding
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer f.Close()
+	if err := json.NewDecoder(bufio.NewReader(f)).Decode(&entries); err != nil {
+		log.Fatal(err)
+	}
+	var noid, nosure uint // actions, work with data
+	fmt.Println("Please, enter ID of contact you want to delete:")
+	fmt.Scan(&noid)
+	for i, j := range entries {
+		if j.ID == noid {
+			fmt.Println(`Are you sure? 
+*the company "Ltd Littleunidragon" is not responsible for "accidentally" permanently deleted contacts
+1) Yes
+2) No `)
+			fmt.Scan(&nosure)
+			if nosure == 1 {
+				entries = append(entries[:i], entries[i+1:]...)
+				fmt.Println("Contact with ID ", noid, " was removed")
+				break
+			} else {
+				break
+			}
+		}
+	}
+	f, err = os.Create("phonebook.json") // and encode it back
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer f.Close()
+	w := bufio.NewWriter(f)
+	defer w.Flush()
+	if err := json.NewEncoder(w).Encode(entries); err != nil {
+		log.Fatal(err)
+	}
+}
 
 func Exit() {
 	os.Exit(0)
 }
 
-func Feedback() {
+type Stars struct {
+	Star int
+	Text string
+}
+
+func Feedback() { // In process......
 	var stars int
-	fmt.Println("How many stars would you give us on Play Market?")
+	fmt.Println("How many stars would you give us?")
 	fmt.Scan(&stars)
 	if stars < 0 {
 		fmt.Println("Isnt this too cruel... ＞﹏＜")
 	} else {
 		fmt.Println("Thanks for sharing your opinion. Its really important ^_^")
-	} // i would wanna to make stars struct and convert it to json file to keep all inputed stars but i didnt understand how to encode with user input
+	} // i would wanna to make stars struct and convert it to json file to keep all inputed stars but i didnt understand how to encode with user
+
 }
 
 func main() {
@@ -112,13 +180,13 @@ func main() {
 		if action == 1 {
 			List()
 		} else if action == 2 {
-			fmt.Println("This function isnt done yet")
+			Add()
 		} else if action == 3 {
-			fmt.Println("This function isnt done yet")
+			Remove()
 		} else if action == 4 {
 			Exit()
 		} else if action == 5 {
-			Feedback()
+			fmt.Println("This function isnt done yet")
 		}
 	}
 }
