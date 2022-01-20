@@ -17,7 +17,7 @@ func UI() (action uint) {
 	4) Exit
 	5) Leave feedback`)
 	fmt.Scan(&action)
-	if action > 5 {
+	if action > 5 || action == 0 {
 		fmt.Println("No such action, please restart program.")
 	}
 	return action
@@ -62,7 +62,7 @@ func List() {
 	Header()
 	for i, j := range entries {
 		fmt.Printf("%4d %14s %14s %20s\n", j.ID, j.LastName, j.FirstName, j.PhoneNumber)
-		if i == 19 || 39 && i < len(entries) { // i rewrite i later
+		if (i+1)%20 == 0 && i < len(entries) {
 			fmt.Println("Press <ENTER> to continue...")
 			fmt.Scanln()
 			Header()
