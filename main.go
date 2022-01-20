@@ -107,16 +107,18 @@ func Feedback() {
 }
 
 func main() {
-	action := UI()
-	if action == 1 {
-		List()
-	} else if action == 2 {
-		fmt.Println("This function isnt done yet")
-	} else if action == 3 {
-		fmt.Println("This function isnt done yet")
-	} else if action == 4 {
-		Exit()
-	} else if action == 5 {
-		Feedback()
+	for {
+		action := UI()
+		if action == 1 {
+			List()
+		} else if action == 2 {
+			fmt.Println("This function isnt done yet")
+		} else if action == 3 {
+			fmt.Println("This function isnt done yet")
+		} else if action == 4 {
+			Exit()
+		} else if action == 5 {
+			Feedback()
+		}
 	}
 }
