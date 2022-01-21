@@ -38,18 +38,33 @@ func Header() {
 	fmt.Printf("%10s %20s %20s %20s\n", "ID", "Last Name", "First Name", "Phone Number")
 	fmt.Println("-------------------------------------------------------------------------")
 }
-
-func List() {
-	var entries []Entry
-	const phonebookFile = "phonebook.json"
+func ReadPhonebook(phonebookFile string) (entries []Entry, err error) {
 	f, err := os.Open(phonebookFile)
 	if err != nil {
-		log.Fatal(err)
+		return nil, err
 	}
 	defer f.Close()
-	if err := json.NewDecoder(bufio.NewReader(f)).Decode(&entries); err != nil {
-		log.Fatal(err)
+	r := bufio.NewReader(f)
+	if err = json.NewDecoder(r).Decode(&entries); err != nil {
+		return nil, err
 	}
+	return entries, nil
+}
+func ReadFeedback() (feedbacks []Feedbackstruct, err error) {
+	f, err := os.Open("feedback.json")
+	if err != nil {
+		return nil, err
+	}
+	defer f.Close()
+	r := bufio.NewReader(f)
+	if err = json.NewDecoder(r).Decode(&feedbacks); err != nil {
+		return nil, err
+	}
+	return feedbacks, nil
+}
+func List(phonebookFile string) {
+	var entries []Entry
+	entries, _ = ReadPhonebook(phonebookFile)
 	Sort(entries)
 	Header()
 	for i, j := range entries {
@@ -65,28 +80,23 @@ func List() {
 }
 
 func GiveID(entries []Entry) (i uint) {
-	i = uint(len(entries)) + 1 //Thats not ideal and will work wrong if the last contact will be deleted
+	/*for i, j := range entries { // i dont know how to combine it, also in this for i always is 1
+		j.ID = uint(i) + 1
+	}
+	return uint(i) + 1*/
+	i = uint(len(entries)) + 1
 	return i
 }
 
-func Add() {
+func Add(scanner *bufio.Scanner, phonebookFile string) {
 	// how to encode with user input??? Tutorial by me (version 1)
-	var entries []Entry // make variable where will be all data
-
-	f, err := os.Open("phonebook.json") // open and encode file with already been information and put it in variable you made in previous step
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer f.Close()
-	if err := json.NewDecoder(bufio.NewReader(f)).Decode(&entries); err != nil {
-		log.Fatal(err)
-	}
+	var entries []Entry                       // make variable where will be all data
+	entries, _ = ReadPhonebook(phonebookFile) // open and encode file with already been information and put it in variable you made in previous step
 
 	var newentries Entry // make new variable with type of your struct, but be careful - it need to be NOT SLICE OF STRUCT, JUST STRUCT, CAUSE WE MAKING ONLY ONE NEW CONTACT, NOT 5 IN ONE TIME
 
-	scanner := bufio.NewScanner(os.Stdin) // Scan information you need
-	fmt.Println("Enter last name:")       // better not use bufio reader, it add \n\r to text and you ll need 2 variables for string and error
-	scanner.Scan()
+	fmt.Println("Enter last name:") // Scan information you need
+	scanner.Scan()                  // better not use bufio reader, it adds \r\n to text and you ll need 2 variables for string and error
 	scanner.Scan()
 	newentries.LastName = scanner.Text()
 	fmt.Println("Enter first name:")
@@ -99,7 +109,7 @@ func Add() {
 
 	entries = append(entries, newentries) // add scanned data to decoded earlier data
 
-	f, err = os.Create("phonebook.json") // and encode it back
+	f, err := os.Create("phonebook.json") // and encode it back
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -112,16 +122,10 @@ func Add() {
 
 }
 
-func Remove() {
-	var entries []Entry                 //var
-	f, err := os.Open("phonebook.json") // opening and decoding
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer f.Close()
-	if err := json.NewDecoder(bufio.NewReader(f)).Decode(&entries); err != nil {
-		log.Fatal(err)
-	}
+func Remove(phonebookFile string) {
+	var entries []Entry                       //var
+	entries, _ = ReadPhonebook(phonebookFile) // opening and decoding
+
 	var noid, nosure uint // actions, work with data
 	fmt.Println("Please, enter ID of contact you want to delete:")
 	fmt.Scan(&noid)
@@ -141,7 +145,7 @@ func Remove() {
 			}
 		}
 	}
-	f, err = os.Create("phonebook.json") // and encode it back
+	f, err := os.Create("phonebook.json") // and encode it back
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -159,27 +163,19 @@ func Exit() {
 
 type Feedbackstruct struct {
 	Stars int
-	Text  string
+	Text  string `json:"Text,omitempty"`
 }
 
-func Feedback() { // i wanned to make stars struct and convert it to json file to keep.
+func Feedback(scanner *bufio.Scanner) { // i wanned to make stars struct and convert it to json file to keep.
 	var feedbacks []Feedbackstruct //variable
+	feedbacks, _ = ReadFeedback()  // open and encode REMEMBER RENAME FILE THAT WILL BE OPENED
 
-	f, err := os.Open("feedback.json") // open and encode REMEMBER RENAME FILE THAT WILL BE OPENED
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer f.Close()
-	if err := json.NewDecoder(bufio.NewReader(f)).Decode(&feedbacks); err != nil {
-		log.Fatal(err)
-	}
 	var newfeedback Feedbackstruct //just var
 
 	fmt.Println("You want to leave a feedback? You are so great user! ^0^") // scan and action
 	fmt.Print("Stars: ")
 	fmt.Scan(&newfeedback.Stars)
 
-	scanner := bufio.NewScanner(os.Stdin) // Scan information you need
 	fmt.Print("Commentary: ")
 	scanner.Scan()
 	scanner.Scan()
@@ -191,7 +187,7 @@ func Feedback() { // i wanned to make stars struct and convert it to json file t
 		fmt.Println("Thanks for sharing your opinion. It is really important for us. ^_^")
 	}
 	feedbacks = append(feedbacks, newfeedback) // add new
-	f, err = os.Create("feedback.json")        // encode FILE RENAIMING
+	f, err := os.Create("feedback.json")       // encode FILE RENAIMING
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -204,18 +200,20 @@ func Feedback() { // i wanned to make stars struct and convert it to json file t
 }
 
 func main() {
+	scanner := bufio.NewScanner(os.Stdin)
+	const phonebookFile = "phonebook.json"
 	for {
 		action := UI()
 		if action == 1 {
-			List()
+			List(phonebookFile)
 		} else if action == 2 {
-			Add()
+			Add(scanner, phonebookFile)
 		} else if action == 3 {
-			Remove()
+			Remove(phonebookFile)
 		} else if action == 4 {
 			Exit()
 		} else if action == 5 {
-			Feedback()
+			Feedback(scanner)
 		}
 	}
 }

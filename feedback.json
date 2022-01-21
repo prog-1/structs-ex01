@@ -1,1 +1,1 @@
-[{"Stars":4,"Text":"Cool, but there is some bugs, that need to be fixed"},{"Stars":-8,"Text":""},{"Stars":-10,"Text":"commenatry donot vork!!!!!"},{"Stars":3,"Text":"not bad, at least it works"}]
+[{"Stars":4,"Text":"Cool, but there is some bugs, that need to be fixed"},{"Stars":-8},{"Stars":-10,"Text":"commentary donot vork!!!!!"},{"Stars":3,"Text":"not bad, at least it works"},{"Stars":4},{"Stars":4,"Text":"now omitempty works"},{"Stars":4,"Text":"4+1 in stars will it work? No, just 4"}]
