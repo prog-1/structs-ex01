@@ -19,17 +19,16 @@ type Entry struct {
 func mainMenu() (choice int) {
 	fmt.Println(`Choose your action:
 1) List all entries.
-2) Add new entry.(under construction)
-3) Remove an entry by ID.(under construction)
+2) Add new entry.
+3) Remove an entry by ID.
 4) Quit`)
 	fmt.Scanln(&choice)
 	return choice
 }
 
-func listEntries() {
+func openFile() []Entry {
 	var entries []Entry
-	const phonebookFile = "phonebook.json"
-	file, err := os.Open(phonebookFile)
+	file, err := os.Open("phonebook.json")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -37,8 +36,12 @@ func listEntries() {
 	if err := json.NewDecoder(bufio.NewReader(file)).Decode(&entries); err != nil {
 		log.Fatal(err)
 	}
-	sort.Slice(entries, func(i, j int) bool { return entries[i].LastName < entries[j].LastName })
+	return entries
+}
 
+func listEntries() {
+	entries := openFile()
+	sort.Slice(entries, func(i, j int) bool { return entries[i].LastName < entries[j].LastName })
 	fmt.Printf("%10s %20s %20s %20s\n", "ID", "Last Name", "First Name", "Phone Number")
 	fmt.Println("-------------------------------------------------------------------------")
 	for i, e := range entries {
@@ -52,20 +55,66 @@ func listEntries() {
 	}
 }
 
-func main() {
+func addNew() {
+	var ID uint
+	entries := openFile()
+	for i, e := range entries {
+		if i == len(entries)-1 {
+			ID = e.ID + 1
+		}
+	}
+	entry := Entry{ID: ID}
+	fmt.Print("Enter last name:")
+	fmt.Scan(&entry.LastName)
+	fmt.Print("Enter first name:")
+	fmt.Scan(&entry.FirstName)
+	fmt.Print("Enter phone number:")
+	fmt.Scan(&entry.PhoneNumber)
+	entries = append(entries, entry)
+	file, err := os.Create("phonebook.json")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer file.Close()
+	if err := json.NewEncoder(file).Encode(entries); err != nil {
+		log.Fatal(err)
+	}
+}
 
+func removeByID() {
+	entries := openFile()
+	var ID uint
+	fmt.Print("Enter ID:")
+	fmt.Scan(&ID)
+	for i, e := range entries {
+		if ID == e.ID {
+			entries = append(entries[:i], entries[i+1:]...)
+		}
+	}
+	file, err := os.Create("phonebook.json")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer file.Close()
+	if err := json.NewEncoder(file).Encode(entries); err != nil {
+		log.Fatal(err)
+	}
+}
+
+func main() {
 	for {
 		choice := mainMenu()
 		if choice == 1 {
 			listEntries()
 		} else if choice == 2 {
-			fmt.Println("Under construction")
+			addNew()
 		} else if choice == 3 {
-			fmt.Println("Under construction")
+			removeByID()
 		} else if choice == 4 {
 			break
 		} else {
 			fmt.Println("ERR: wrong choice", choice)
+			// After addNew() and removeByID() completion, an error "ERR: wrong choice 0" appears, the program continues to work.
 		}
 	}
 }
