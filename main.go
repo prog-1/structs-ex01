@@ -39,6 +39,17 @@ func openFile() []Entry {
 	return entries
 }
 
+func saveFile(entries []Entry) {
+	file, err := os.Create("phonebook.json")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer file.Close()
+	if err := json.NewEncoder(file).Encode(entries); err != nil {
+		log.Fatal(err)
+	}
+}
+
 func listEntries() {
 	entries := openFile()
 	sort.Slice(entries, func(i, j int) bool { return entries[i].LastName < entries[j].LastName })
@@ -59,7 +70,7 @@ func addNew() {
 	var ID uint
 	entries := openFile()
 	for i, e := range entries {
-		if i == len(entries)-1 {
+		if i != 0 && entries[i].ID > entries[i-1].ID {
 			ID = e.ID + 1
 		}
 	}
@@ -71,14 +82,7 @@ func addNew() {
 	fmt.Print("Enter phone number:")
 	fmt.Scan(&entry.PhoneNumber)
 	entries = append(entries, entry)
-	file, err := os.Create("phonebook.json")
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer file.Close()
-	if err := json.NewEncoder(file).Encode(entries); err != nil {
-		log.Fatal(err)
-	}
+	saveFile(entries)
 }
 
 func removeByID() {
@@ -91,14 +95,7 @@ func removeByID() {
 			entries = append(entries[:i], entries[i+1:]...)
 		}
 	}
-	file, err := os.Create("phonebook.json")
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer file.Close()
-	if err := json.NewEncoder(file).Encode(entries); err != nil {
-		log.Fatal(err)
-	}
+	saveFile(entries)
 }
 
 func main() {
