@@ -16,6 +16,8 @@ func main() {
 			listEntries()
 		} else if choice == 2 {
 			add()
+		} else if choice == 3 {
+			remove()
 		} else if choice == 4 {
 			break
 		} else {
@@ -77,8 +79,7 @@ func listEntries() {
 
 func add() {
 	var entries []Entry
-	var ID uint32
-	new := Entry{ID: ID}
+	var new Entry
 
 	f, err := os.Open(phonebookFile)
 	if err != nil {
@@ -123,5 +124,31 @@ func add() {
 }
 
 func remove() {
+	var entries []Entry
+	var ID uint32
 
+	f, err := os.Open(phonebookFile)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer f.Close()
+	if err := json.NewDecoder(bufio.NewReader(f)).Decode(&entries); err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Println("Enter ID:")
+	fmt.Scan(&ID)
+
+	for x, i := range entries {
+		if i.ID == ID {
+			entries = append(entries[:x], entries[x+1:]...)
+			f, _ = os.Create("phonebook.json")
+			defer f.Close()
+			e := bufio.NewWriter(f)
+			defer e.Flush()
+			if err := json.NewEncoder(e).Encode(entries); err != nil {
+				log.Fatal(err)
+			}
+		}
+	}
 }
