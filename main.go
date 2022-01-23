@@ -56,6 +56,36 @@ func listEntries() {
 	}
 }
 
+func removeId() {
+	const phonebookFile = "phonebook.json"
+	var entries []Entry
+	f, err := os.Open(phonebookFile)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer f.Close()
+	if err := json.NewDecoder(bufio.NewReader(f)).Decode(&entries); err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Println("Enter ID of the contact that you want to be  removed.")
+	fmt.Scan(&id)
+
+	var id uint32
+	for a, b := range entries {
+		if b.ID == id {
+			entries = append(entries[:a], entries[a+1:]...)
+			f, _ = os.Create("phonebook.json")
+			s := bufio.NewWriter(f)
+			defer s.Flush()
+			defer f.Close()
+			if err := json.NewEncoder(s).Encode(entries); err != nil {
+				log.Fatal(err)
+			}
+		}
+	}
+}
+
 func main() {
 	for {
 		choice := mainMenu()
