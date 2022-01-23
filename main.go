@@ -21,17 +21,77 @@ func check(err error) {
 		log.Fatal(err)
 	}
 }
-func Remove() {
-	fmt.Println("Coming soon...")
-	Menu()
+func Remove() string {
+	const phonebookFile = "phonebook.json"
+	var entries []Entry
+	f, err := os.Open(phonebookFile)
+	check(err)
+	defer f.Close()
+	if err := json.NewDecoder(bufio.NewReader(f)).Decode(&entries); err != nil {
+		log.Fatal(err)
+	}
+	id := -1
+	fmt.Println("Enter ID:")
+	fmt.Scanln(&id)
+	for i, v := range entries {
+		if v.ID == uint32(id) {
+			entries = append(entries[:i], entries[i+1:]...)
+			f, _ = os.Create("phonebook.json")
+			defer f.Close()
+			w := bufio.NewWriter(f)
+			defer w.Flush()
+			if err := json.NewEncoder(w).Encode(entries); err != nil {
+				log.Fatal(err)
+			}
+			return ""
+		}
+	}
+	return "ID does not exist"
 }
 func Add() {
-	fmt.Println("Coming soon...")
-	Menu()
+	const phonebookFile = "phonebook.json"
+	var entries []Entry
+	var new Entry
+	f, err := os.Open(phonebookFile)
+	check(err)
+	defer f.Close()
+	if err := json.NewDecoder(bufio.NewReader(f)).Decode(&entries); err != nil {
+		log.Fatal(err)
+	}
+	scanner := bufio.NewScanner(os.Stdin)
+	fmt.Println("Enter last name:")
+	scanner.Scan()
+	new.LastName = scanner.Text()
+	fmt.Println("Enter first name:")
+	scanner.Scan()
+	new.FirstName = scanner.Text()
+	fmt.Println("Enter phone number:")
+	scanner.Scan()
+	new.PhoneNumber = scanner.Text()
+	var id uint32
+	for _, v := range entries {
+		if id < v.ID {
+			id = v.ID
+		}
+
+	}
+	new.ID = id + 1
+	entries = append(entries, new)
+	f, err = os.Create("phonebook.json")
+	check(err)
+	defer f.Close()
+	w := bufio.NewWriter(f)
+	defer w.Flush()
+	if err := json.NewEncoder(w).Encode(entries); err != nil {
+		log.Fatal(err)
+	}
+
 }
+
 func List() {
 	const phonebookFile = "phonebook.json"
 	var entries []Entry
+
 	var i int
 	f, err := os.Open(phonebookFile)
 	check(err)
@@ -40,24 +100,23 @@ func List() {
 		log.Fatal(err)
 	}
 	sort.Slice(entries, func(i, j int) bool { return entries[i].LastName < entries[j].LastName })
-	fmt.Printf("%s%24s%24s%26s\n", "ID", "Last Name", "First name", "Phone number")
+	fmt.Printf("%5s%24s%24s%26s\n", "ID", "Last Name", "First name", "Phone number")
 	fmt.Println("----------------------------------------------------------------------------")
 	for _, v := range entries {
 		if i == 20 {
 			fmt.Println("Please press <ENTER> to continue...")
 			fmt.Scan()
-			fmt.Printf("%s%24s%24s%26s\n", "ID", "Last Name", "First name", "Phone number")
+			fmt.Printf("%5s%24s%24s%26s\n", "ID", "Last Name", "First name", "Phone number")
 			fmt.Println("----------------------------------------------------------------------------")
 			i = 0
 		}
-		fmt.Printf("%d%25s%24s%26s\n", v.ID, v.LastName, v.FirstName, v.PhoneNumber)
+		fmt.Printf("%5d%25s%24s%26s\n", v.ID, v.LastName, v.FirstName, v.PhoneNumber)
 		i++
 	}
 	fmt.Println("Please press <ENTER> to return to menu...")
 	fmt.Scanln(&i)
-	Menu()
 }
-func Menu() {
+func Menu() int {
 	fmt.Println(`Please choose you action:
 1) List all entries.
 2) Add new entry.
@@ -74,13 +133,18 @@ Enter number(1-4):`)
 	case 3:
 		Remove()
 	case 4:
-		return
+		return 4
 	default:
 		fmt.Println("Incorect value")
-		Menu()
-	}
 
+	}
+	return 0
 }
 func main() {
-	Menu()
+	for {
+		a := Menu()
+		if a == 4 {
+			return
+		}
+	}
 }
