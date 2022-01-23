@@ -1,0 +1,24 @@
+[{
+    "ID":1,
+    "FirstName":"Den",
+    "LastName":"Baranniks",
+    "PhoneNumber":"+3711234"
+},
+{
+    "ID":2,
+    "FirstName":"Jaroslavs",
+    "LastName":"Samcuks",
+    "PhoneNumber":"+3719087"
+},
+{
+    "ID":3,
+    "FirstName":"Ivan ",
+    "LastName":"lapitskiy",
+    "PhoneNumber":"+3715678"
+},
+{
+    "ID":4,
+    "FirstName":"Feodors",
+    "LastName":"Mirskis",
+    "PhoneNumber":"+3713456"
+}] 
