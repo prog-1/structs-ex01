@@ -33,7 +33,7 @@ func Add(){
   		log.Fatal(err)
 	}
 
-	phone := struct {
+	type phone struct {
 		name string
 		surname string
 		number int
@@ -44,6 +44,7 @@ func Add(){
 	fmt.Scan(&phone)
 	add := append(gg ,phone)
 	fmt.Printl(add)
+}
 
 func Remove(){
 	file, err := os.Open("phone book.json")
@@ -52,7 +53,7 @@ func Remove(){
 	}
 	defer file.Close()
 
-	phone := struct {
+	type phone struct {
 		name string
 		surname string
 		number int
@@ -63,10 +64,10 @@ func Remove(){
 	var id int
 	fmt.Println("Enter ID")
 	fmt.Scan(&id)
-	for indx := 1,indx < len(scann),indx++{
-		if id == indx{
-			a := [:indx]float64
-			b := [indx:]float64
+	for inx := 1, inx < len(scann),inx++{
+		if id == inx{
+			a := [:inx]float64
+			b := [inx:]float64
 			fmt.Println(a,b)
 		}
 	}
