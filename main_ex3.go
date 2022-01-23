@@ -14,6 +14,8 @@ func main() {
 		choice := mainMenu()
 		if choice == 1 {
 			listEntries()
+		} else if choice == 2 {
+			add()
 		} else if choice == 4 {
 			break
 		} else {
@@ -44,9 +46,12 @@ func printHeader() {
 	fmt.Println("-------------------------------------------------------------------------")
 }
 
-func listEntries() {
-	const phonebookFile = "phonebook.json"
+const (
+	phonebookFile = "phonebook.json"
+	pageLines     = 20
+)
 
+func listEntries() {
 	var entries []Entry
 
 	f, err := os.Open(phonebookFile)
@@ -68,5 +73,45 @@ func listEntries() {
 			fmt.Scanln()
 			printHeader()
 		}
+	}
+}
+
+func newID(entries []Entry) (id uint) {
+	for _, v := range entries {
+		if id < uint(v.ID) {
+			id = uint(v.ID)
+		}
+	}
+	return id + 1
+}
+
+func add() {
+	var Entries []Entry
+	var New Entry
+
+	f, err := os.Open(phonebookFile)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer f.Close()
+	if err := json.NewDecoder(bufio.NewReader(f)).Decode(&Entries); err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Println("Enter last name:")
+	fmt.Scan(&New.LastName)
+	fmt.Println("Enter first name:")
+	fmt.Scan(&New.FirstName)
+	fmt.Println("Enter phone number of contact:")
+	fmt.Scan(&New.PhoneNumber)
+	newID(Entries)
+	Entries = append(Entries, New)
+
+	f, _ = os.Create("phonebook.json")
+	defer f.Close()
+	w := bufio.NewWriter(f)
+	defer w.Flush()
+	if err := json.NewEncoder(w).Encode(New); err != nil {
+		log.Fatal(err)
 	}
 }
