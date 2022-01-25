@@ -30,6 +30,8 @@ type Entry struct {
 	PhoneNumber string
 }
 
+const phonebookFile = "phonebook.json"
+
 func Sort(entries []Entry) {
 	sort.Slice(entries, func(i, j int) bool { return entries[i].LastName < entries[j].LastName })
 }
@@ -38,7 +40,7 @@ func Header() {
 	fmt.Printf("%10s %20s %20s %20s\n", "ID", "Last Name", "First Name", "Phone Number")
 	fmt.Println("-------------------------------------------------------------------------")
 }
-func ReadPhonebook(phonebookFile string) (entries []Entry, err error) {
+func ReadPhonebook() (entries []Entry, err error) {
 	f, err := os.Open(phonebookFile)
 	if err != nil {
 		return nil, err
@@ -62,17 +64,15 @@ func ReadFeedback() (feedbacks []Feedbackstruct, err error) {
 	}
 	return feedbacks, nil
 }
-func List(phonebookFile string) {
+func List() {
 	var entries []Entry
-	entries, _ = ReadPhonebook(phonebookFile)
+	entries, _ = ReadPhonebook()
 	Sort(entries)
 	Header()
 	for i, j := range entries {
 		fmt.Printf("%10d %20s %20s %20s\n", j.ID, j.LastName, j.FirstName, j.PhoneNumber)
 		if (i+1)%20 == 0 && i < len(entries) {
-			fmt.Println(" ")
 			fmt.Println("Press <ENTER> to continue...")
-			fmt.Println(" ")
 			fmt.Scanln()
 			Header()
 		}
@@ -80,18 +80,14 @@ func List(phonebookFile string) {
 }
 
 func GiveID(entries []Entry) (i uint) {
-	/*for i, j := range entries { // i dont know how to combine it, also in this for i always is 1
-		j.ID = uint(i) + 1
-	}
-	return uint(i) + 1*/
 	i = uint(len(entries)) + 1
 	return i
 }
 
-func Add(scanner *bufio.Scanner, phonebookFile string) {
+func Add(scanner *bufio.Scanner) {
 	// how to encode with user input??? Tutorial by me (version 1)
-	var entries []Entry                       // make variable where will be all data
-	entries, _ = ReadPhonebook(phonebookFile) // open and encode file with already been information and put it in variable you made in previous step
+	var entries []Entry          // make variable where will be all data
+	entries, _ = ReadPhonebook() // open and encode file with already been information and put it in variable you made in previous step
 
 	var newentries Entry // make new variable with type of your struct, but be careful - it need to be NOT SLICE OF STRUCT, JUST STRUCT, CAUSE WE MAKING ONLY ONE NEW CONTACT, NOT 5 IN ONE TIME
 
@@ -122,9 +118,9 @@ func Add(scanner *bufio.Scanner, phonebookFile string) {
 
 }
 
-func Remove(phonebookFile string) {
-	var entries []Entry                       //var
-	entries, _ = ReadPhonebook(phonebookFile) // opening and decoding
+func Remove() {
+	var entries []Entry          //var
+	entries, _ = ReadPhonebook() // opening and decoding
 
 	var noid, nosure uint // actions, work with data
 	fmt.Println("Please, enter ID of contact you want to delete:")
@@ -139,10 +135,8 @@ func Remove(phonebookFile string) {
 			if nosure == 1 {
 				entries = append(entries[:i], entries[i+1:]...)
 				fmt.Println("Contact with ID ", noid, " was removed")
-				break
-			} else {
-				break
 			}
+			break
 		}
 	}
 	f, err := os.Create("phonebook.json") // and encode it back
@@ -201,15 +195,14 @@ func Feedback(scanner *bufio.Scanner) { // i wanned to make stars struct and con
 
 func main() {
 	scanner := bufio.NewScanner(os.Stdin)
-	const phonebookFile = "phonebook.json"
 	for {
 		action := UI()
 		if action == 1 {
-			List(phonebookFile)
+			List()
 		} else if action == 2 {
-			Add(scanner, phonebookFile)
+			Add(scanner)
 		} else if action == 3 {
-			Remove(phonebookFile)
+			Remove()
 		} else if action == 4 {
 			Exit()
 		} else if action == 5 {
