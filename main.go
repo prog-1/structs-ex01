@@ -107,9 +107,13 @@ func List() {
 	}
 }
 
-func GiveID(entries []Entry) (i uint) { //i broke it...
-	i = uint(len(entries)) + 1
-	return i
+func GiveID(entries []Entry) (i uint) { // it works?
+	for _, j := range entries {
+		if j.ID > i {
+			i = j.ID
+		}
+	}
+	return i + 1
 }
 
 func Add(scanner *bufio.Scanner) {
@@ -118,7 +122,7 @@ func Add(scanner *bufio.Scanner) {
 	entries, _ = ReadPhonebook()    // open and encode file with already been information and put it in variable you made in previous step
 	var newentries Entry            // make new variable with type of your struct, but be careful - it need to be NOT SLICE OF STRUCT, JUST STRUCT, CAUSE WE MAKING ONLY ONE NEW CONTACT, NOT 5 IN ONE TIME
 	fmt.Println("Enter last name:") // Scan information you need
-	scanner.Scan()                  // better not use bufio reader, it adds \r\n to text and you ll need 2 variables for string and error
+	scanner.Scan()                  // better not use bufio reader, it adds \r\n to text and youll need 2 variables for string and error
 	scanner.Scan()
 	newentries.LastName = scanner.Text()
 	fmt.Println("Enter first name:")
@@ -127,7 +131,7 @@ func Add(scanner *bufio.Scanner) {
 	fmt.Println("Enter phone number:")
 	scanner.Scan()
 	newentries.PhoneNumber = scanner.Text()
-	newentries.ID = GiveID(entries)       // its broken
+	newentries.ID = GiveID(entries)       // i hope its not broken anymore
 	entries = append(entries, newentries) // add scanned data to decoded earlier data
 	encodePhonebook(entries)
 }
