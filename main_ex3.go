@@ -81,13 +81,9 @@ func add() {
 	var entries []Entry
 	var new Entry
 
-	f, err := os.Open(phonebookFile)
+	entries, err := loadPb()
 	if err != nil {
-		log.Fatal(err)
-	}
-	defer f.Close()
-	if err := json.NewDecoder(bufio.NewReader(f)).Decode(&entries); err != nil {
-		log.Fatal(err)
+		fmt.Println("Err")
 	}
 
 	scanner := bufio.NewScanner(os.Stdin)
@@ -111,44 +107,51 @@ func add() {
 	new.ID = new.ID + 1
 	entries = append(entries, new)
 
-	f, err = os.Create("phonebook.json")
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer f.Close()
-	w := bufio.NewWriter(f)
-	defer w.Flush()
-	if err := json.NewEncoder(w).Encode(entries); err != nil {
-		log.Fatal(err)
+	if err := savePb(entries); err != nil {
+		fmt.Println("Err")
 	}
 }
 
 func remove() {
-	var entries []Entry
-	var ID uint32
-
-	f, err := os.Open(phonebookFile)
+	var id uint32
+	i := 0
+	entries, err := loadPb()
 	if err != nil {
-		log.Fatal(err)
-	}
-	defer f.Close()
-	if err := json.NewDecoder(bufio.NewReader(f)).Decode(&entries); err != nil {
-		log.Fatal(err)
+		fmt.Println("Err")
 	}
 
 	fmt.Println("Enter ID:")
-	fmt.Scan(&ID)
+	fmt.Scan(&id)
 
-	for x, i := range entries {
-		if i.ID == ID {
-			entries = append(entries[:x], entries[x+1:]...)
-			f, _ = os.Create("phonebook.json")
-			defer f.Close()
-			e := bufio.NewWriter(f)
-			defer e.Flush()
-			if err := json.NewEncoder(e).Encode(entries); err != nil {
-				log.Fatal(err)
-			}
+	for _, e := range entries {
+		if e.ID != id {
+			entries[i] = e
+			i++
 		}
 	}
+	entries = entries[:i]
+	if err := savePb(entries); err != nil {
+		fmt.Println("Err")
+	}
+}
+func loadPb() ([]Entry, error) {
+	f, err := os.Open(phonebookFile)
+	if err != nil {
+		return nil, err
+	}
+	defer f.Close()
+
+	var entries []Entry
+	if err := json.NewDecoder(bufio.NewReader(f)).Decode(&entries); err != nil {
+		return nil, err
+	}
+	return entries, err
+}
+
+func savePb(entries []Entry) error {
+	f, err := os.Create("phonebook.json")
+	if err != nil {
+		return err
+	}
+	return json.NewEncoder(f).Encode(entries)
 }
