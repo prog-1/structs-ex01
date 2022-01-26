@@ -34,16 +34,20 @@ func Add(){
 	}
 
 	type phone struct {
+		id uint
 		name string
 		surname string
 		number int
 	}
-	
-	gg := []float64{s}
-	fmt.Println("Enter name,surname and phone number")
-	fmt.Scan(&phone)
-	add := append(gg ,phone)
-	fmt.Printl(add)
+	var scan int
+	fmt.Println("Enter ID,Name,Surname and Phone number")
+	fmt.Scan(&scan)
+	scan := []phone{}
+
+	if err := json.NewDecoder(f).Decode(&scan);err != nil{
+		fmt.Println(nil,err)
+	}
+	fmt.Println(scan,err)
 }
 
 func Remove(){
@@ -57,19 +61,6 @@ func Remove(){
 		name string
 		surname string
 		number int
-	}
-
-	scan := fmt.Fscan(file, &phone)
-	scann := []float64{scan}
-	var id int
-	fmt.Println("Enter ID")
-	fmt.Scan(&id)
-	for inx := 1, inx < len(scann),inx++{
-		if id == inx{
-			a := [:inx]float64
-			b := [inx:]float64
-			fmt.Println(a,b)
-		}
 	}
 
 }

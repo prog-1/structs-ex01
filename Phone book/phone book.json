@@ -1,4 +1,5 @@
-ID              Last Name                First Name                Phone#
--------------------------------------------------------------------------
-1               Samcuks                  Jaroslavs                 +41123456789
-2               Zaichenkov               Pavel                     +41987654321
+[{"id":1,"name":"Pavel","surname":"Zaichenkov","number":"+3716659823"},
+{"id":2,"name":"Alex","surname":"Popkov","number":"+36841325"},
+{"id":3,"name":"Emily","surname":"Moch","number":"+358746132"},
+{"id":4,"name":"Len","surname":"Zimorodka","number":"+12548521"},
+{"id":5,"name":"Manci","surname":"Zipol","number":"+84512016"}]
