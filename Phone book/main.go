@@ -42,12 +42,12 @@ func Add(){
 	var scan int
 	fmt.Println("Enter ID,Name,Surname and Phone number")
 	fmt.Scan(&scan)
-	scan := []phone{}
+	scanir := []phone{scan}
 
-	if err := json.NewDecoder(f).Decode(&scan);err != nil{
+	if err := json.NewDecoder(f).Decode(&scanir);err != nil{
 		fmt.Println(nil,err)
 	}
-	fmt.Println(scan,err)
+	fmt.Println(scanir,err)
 }
 
 func Remove(){
@@ -57,21 +57,39 @@ func Remove(){
 	}
 	defer file.Close()
 
+	s := bufio.NewScanner(f)
+	for s.Scan() {
+  		s.Text()
+	} 
+	if err := s.Err(); err != nil {
+  		log.Fatal(err)
+	}
+
 	type phone struct {
+		id uint
 		name string
 		surname string
 		number int
 	}
 
+	var scan int
+	fmt.Println("Enter ID")
+	fmt.Scan(&scan)
+	id := []phone{scan}
+
+	if err := json.NewDecoder(f).Decode(&id);err != nil{
+		fmt.Println(nil,err)
+	}
+	//каким образом я должна удалить что либо из файла?
+	fmt.Println("Done!")
 }
 
-func main() {
-	var action,answer int
+func main(action int)(answer string) {
 	for {
 		fmt.Println("Confirm using main menu,write yes")
 		fmt.Scan(&answer)
 		if answer == yes{
-			for t := 0, t < 20, t++ {
+			for t := 0, t < 20, t++ { //я не могу понять,что ему не нравится в t?
 				fmt.Println("Choose your action:
 					1) List all entries.
 					2) Add new entry.
@@ -79,9 +97,9 @@ func main() {
 				fmt.Scan(&action)
 				if action == 1{
 					List()
-				} if else action == 2{
+				} else if action == 2{
 					Add()
-				} if else action == 3{
+				} else if action == 3{
 					Remove()
 				} else {
 					fmt.Println("Wrong number")
