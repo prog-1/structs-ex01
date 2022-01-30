@@ -1,0 +1,24 @@
+[{
+    "ID":1,
+    "FirstName":"Alina",
+    "LastName":"Aniscenko",
+    "PhoneNumber":"+371123"
+},
+{
+    "ID":2,
+    "FirstName":"Valeria",
+    "LastName":"Maksimkina",
+    "PhoneNumber":"+371234"
+},
+{
+    "ID":3,
+    "FirstName":"Ilja",
+    "LastName":"Molchanov",
+    "PhoneNumber":"+371345"
+},
+{
+    "ID":4,
+    "FirstName":"Anastasija",
+    "LastName":"Voropajeva",
+    "PhoneNumber":"+371456"
+}] 
