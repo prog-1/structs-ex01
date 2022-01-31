@@ -91,6 +91,7 @@ func Add() {
 func List() {
 	const phonebookFile = "phonebook.json"
 	var entries []Entry
+
 	var i int
 	f, err := os.Open(phonebookFile)
 	check(err)
@@ -120,7 +121,7 @@ func Menu() int {
 1) List all entries.
 2) Add new entry.
 3) Remove an entry by ID.
-4) Stop programm 
+4) Stop program
 Enter number(1-4):`)
 	var a uint
 	fmt.Scan(&a)
