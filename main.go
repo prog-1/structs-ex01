@@ -57,6 +57,8 @@ func Remove() {
 func Add() {
 	var entries []Entry
 	var add Entry
+	var id uint32
+
 	const phonebookFile = "phonebook.json"
 	scanner := bufio.NewScanner(os.Stdin)
 	f, err := os.Open(phonebookFile)
@@ -67,8 +69,14 @@ func Add() {
 	if err := json.NewDecoder(bufio.NewReader(f)).Decode(&entries); err != nil {
 		log.Fatal(err)
 	}
-	ID := uint32(len(entries))
-	add.ID = ID
+
+	for _, v := range entries {
+		if id < v.ID {
+			id = v.ID
+		}
+
+	}
+	add.ID = id + 1
 	fmt.Print("Enter last name: ")
 	scanner.Scan()
 	add.LastName = scanner.Text()
